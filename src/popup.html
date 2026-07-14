@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TryHackMe Utilities</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">TryHackMe Utilities</p>
+          <h1>Room leaderboard</h1>
+        </div>
+        <button id="refreshButton" class="icon-button" type="button" title="Refresh leaderboard" aria-label="Refresh leaderboard">
+          <span aria-hidden="true">↻</span>
+        </button>
+      </header>
+
+      <section class="controls" aria-label="Leaderboard controls">
+        <label class="field">
+          <span>Room code</span>
+          <input id="roomCodeInput" type="text" autocomplete="off" spellcheck="false" placeholder="corridor">
+        </label>
+        <label class="field compact">
+          <span>Page size</span>
+          <select id="limitInput">
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="250">250</option>
+          </select>
+        </label>
+        <button id="loadButton" class="primary-button" type="button">Load</button>
+      </section>
+
+      <section id="status" class="status" role="status" aria-live="polite">Open a TryHackMe room or enter a room code.</section>
+
+      <section id="mePanel" class="me-panel hidden" aria-label="Your leaderboard position">
+        <span class="rank-badge" id="meRank">-</span>
+        <div>
+          <p class="me-name" id="meName">Signed-in user</p>
+          <p class="me-meta" id="meMeta">Not found in this leaderboard yet.</p>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="Leaderboard tools">
+        <label class="search-field">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" autocomplete="off" spellcheck="false" placeholder="Search users">
+        </label>
+        <span id="resultCount" class="result-count">0 users</span>
+      </section>
+
+      <section class="table-wrap" aria-label="Full leaderboard">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">User</th>
+              <th scope="col">Score</th>
+              <th scope="col">Completed</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <tr>
+              <td colspan="4" class="empty">No leaderboard loaded.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

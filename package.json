@@ -1,0 +1,14 @@
+{
+  "name": "thm-utils-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "node --check src/popup.js && node --check src/leaderboard.js"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.0"
+  }
+}
