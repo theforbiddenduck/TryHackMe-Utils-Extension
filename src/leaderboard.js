@@ -6,7 +6,7 @@ export async function fetchFullLeaderboard({
   limit = DEFAULT_LIMIT,
   maxPages = MAX_PAGES,
   fetchPage,
-  onProgress = () => {}
+  onProgress = () => {},
 }) {
   const entries = [];
   const seenKeys = new Set();
@@ -52,7 +52,7 @@ export function extractEntries(data) {
     data?.leaderboard,
     data?.results,
     data?.users,
-    data?.items
+    data?.items,
   ];
 
   return candidates.find(Array.isArray) || [];
@@ -60,12 +60,40 @@ export function extractEntries(data) {
 
 export function normalizeEntry(entry, fallbackRank) {
   const user = entry.user || entry.userInfo || entry.profile || {};
-  const username = firstString(entry.username, entry.name, entry.userName, user.username, user.name);
-  const displayName = firstString(entry.displayName, entry.fullName, user.displayName, user.fullName);
+  const username = firstString(
+    entry.username,
+    entry.name,
+    entry.userName,
+    user.username,
+    user.name,
+  );
+  const displayName = firstString(
+    entry.displayName,
+    entry.fullName,
+    user.displayName,
+    user.fullName,
+  );
   const id = firstString(entry.userId, entry.id, entry._id, user.id, user._id);
-  const rank = firstNumber(entry.rank, entry.position, entry.place, fallbackRank);
-  const score = firstNumber(entry.score, entry.points, entry.totalScore, entry.value, 0);
-  const completedAt = firstString(entry.completedAt, entry.completed, entry.completionDate, entry.createdAt, entry.date);
+  const rank = firstNumber(
+    entry.rank,
+    entry.position,
+    entry.place,
+    fallbackRank,
+  );
+  const score = firstNumber(
+    entry.score,
+    entry.points,
+    entry.totalScore,
+    entry.value,
+    0,
+  );
+  const completedAt = firstString(
+    entry.completedAt,
+    entry.completed,
+    entry.completionDate,
+    entry.createdAt,
+    entry.date,
+  );
 
   return {
     raw: entry,
@@ -74,7 +102,7 @@ export function normalizeEntry(entry, fallbackRank) {
     displayName,
     rank,
     score,
-    completedAt
+    completedAt,
   };
 }
 
@@ -83,11 +111,16 @@ export function findCurrentUserEntry(entries, user) {
     return null;
   }
 
-  return entries.find((entry) => {
-    const sameId = user.id && entry.id && user.id === entry.id;
-    const sameUsername = user.username && entry.username && user.username.toLowerCase() === entry.username.toLowerCase();
-    return sameId || sameUsername;
-  }) || null;
+  return (
+    entries.find((entry) => {
+      const sameId = user.id && entry.id && user.id === entry.id;
+      const sameUsername =
+        user.username &&
+        entry.username &&
+        user.username.toLowerCase() === entry.username.toLowerCase();
+      return sameId || sameUsername;
+    }) || null
+  );
 }
 
 export function firstString(...values) {

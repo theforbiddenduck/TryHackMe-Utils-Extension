@@ -3,12 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "npm run check:syntax && npm run lint && npm run format:check",
+    "check:syntax": "node --check src/popup.js && node --check src/leaderboard.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:firefox": "npm run build && node scripts/lint-firefox.mjs",
+    "package": "npm run build && node scripts/package.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "node --check src/popup.js && node --check src/leaderboard.js"
+    "validate": "npm run check && npm test && npm run package && npm run lint:firefox",
+    "version:check": "node scripts/check-version.mjs",
+    "version:set": "node scripts/set-version.mjs"
   },
   "devDependencies": {
-    "vitest": "^4.0.0"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.5",
+    "vitest": "^4.0.0",
+    "web-ext": "^10.5.0"
   }
 }

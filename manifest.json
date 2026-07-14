@@ -7,12 +7,6 @@
     "default_title": "TryHackMe Utilities",
     "default_popup": "src/popup.html"
   },
-  "permissions": [
-    "activeTab",
-    "cookies",
-    "scripting"
-  ],
-  "host_permissions": [
-    "https://tryhackme.com/*"
-  ]
+  "permissions": ["activeTab", "cookies", "scripting"],
+  "host_permissions": ["https://tryhackme.com/*"]
 }

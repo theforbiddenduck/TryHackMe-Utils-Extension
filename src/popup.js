@@ -2,17 +2,18 @@ import {
   DEFAULT_LIMIT,
   fetchFullLeaderboard,
   findCurrentUserEntry,
-  normalizeValue
+  normalizeValue,
 } from "./leaderboard.js";
 
 const THM_ORIGIN = "https://tryhackme.com";
+const extensionApi = globalThis.browser ?? globalThis.chrome;
 
 const state = {
   entries: [],
   currentUser: null,
   currentRoomCode: "",
   tryHackMeTabId: null,
-  isLoading: false
+  isLoading: false,
 };
 
 const els = {
@@ -27,7 +28,7 @@ const els = {
   meMeta: document.querySelector("#meMeta"),
   searchInput: document.querySelector("#searchInput"),
   resultCount: document.querySelector("#resultCount"),
-  leaderboardBody: document.querySelector("#leaderboardBody")
+  leaderboardBody: document.querySelector("#leaderboardBody"),
 };
 
 document.addEventListener("DOMContentLoaded", init);
@@ -54,11 +55,18 @@ async function init() {
   }
 
   renderCurrentUser(null);
-  setStatus(user ? `Signed in as ${user.username}. Enter a room code to load a leaderboard.` : "Enter a room code to load a leaderboard.");
+  setStatus(
+    user
+      ? `Signed in as ${user.username}. Enter a room code to load a leaderboard.`
+      : "Enter a room code to load a leaderboard.",
+  );
 }
 
 async function getActiveTryHackMeTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const [tab] = await extensionApi.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
   if (!tab?.url) {
     return null;
   }
@@ -86,7 +94,10 @@ function getRoomCodeFromUrl(value) {
 }
 
 async function getLoggedInUser() {
-  const cookie = await chrome.cookies.get({ url: THM_ORIGIN, name: "thm-ud" });
+  const cookie = await extensionApi.cookies.get({
+    url: THM_ORIGIN,
+    name: "thm-ud",
+  });
   if (!cookie?.value) {
     return null;
   }
@@ -97,7 +108,6 @@ async function getLoggedInUser() {
     return {
       id: normalizeValue(parsed.id),
       username: normalizeValue(parsed.username),
-      email: normalizeValue(parsed.email)
     };
   } catch {
     return null;
@@ -128,8 +138,10 @@ async function loadLeaderboard(roomCode) {
       limit,
       fetchPage: fetchScoreboardPage,
       onProgress: ({ page, entriesLoaded }) => {
-        setStatus(`Loading page ${page}... ${entriesLoaded.toLocaleString()} users found.`);
-      }
+        setStatus(
+          `Loading page ${page}... ${entriesLoaded.toLocaleString()} users found.`,
+        );
+      },
     });
     state.entries = entries;
 
@@ -140,7 +152,9 @@ async function loadLeaderboard(roomCode) {
     if (entries.length === 0) {
       setStatus(`No leaderboard entries returned for ${roomCode}.`);
     } else {
-      setStatus(`Loaded ${entries.length.toLocaleString()} leaderboard entr${entries.length === 1 ? "y" : "ies"} for ${roomCode}.`);
+      setStatus(
+        `Loaded ${entries.length.toLocaleString()} leaderboard entr${entries.length === 1 ? "y" : "ies"} for ${roomCode}.`,
+      );
     }
   } catch (error) {
     state.entries = [];
@@ -155,7 +169,12 @@ async function loadLeaderboard(roomCode) {
 async function fetchScoreboardPage({ roomCode, limit, page }) {
   if (state.tryHackMeTabId) {
     try {
-      return await fetchScoreboardPageFromTryHackMeTab(state.tryHackMeTabId, roomCode, limit, page);
+      return await fetchScoreboardPageFromTryHackMeTab(
+        state.tryHackMeTabId,
+        roomCode,
+        limit,
+        page,
+      );
     } catch {
       return fetchScoreboardPageFromExtension(roomCode, limit, page);
     }
@@ -164,8 +183,13 @@ async function fetchScoreboardPage({ roomCode, limit, page }) {
   return fetchScoreboardPageFromExtension(roomCode, limit, page);
 }
 
-async function fetchScoreboardPageFromTryHackMeTab(tabId, roomCode, limit, page) {
-  const [result] = await chrome.scripting.executeScript({
+async function fetchScoreboardPageFromTryHackMeTab(
+  tabId,
+  roomCode,
+  limit,
+  page,
+) {
+  const [result] = await extensionApi.scripting.executeScript({
     target: { tabId },
     world: "MAIN",
     args: [roomCode, limit, page],
@@ -178,27 +202,29 @@ async function fetchScoreboardPageFromTryHackMeTab(tabId, roomCode, limit, page)
       const response = await fetch(url.toString(), {
         credentials: "include",
         headers: {
-          accept: "application/json"
-        }
+          accept: "application/json",
+        },
       });
 
       if (!response.ok) {
         return {
           ok: false,
-          status: response.status
+          status: response.status,
         };
       }
 
       return {
         ok: true,
-        data: await response.json()
+        data: await response.json(),
       };
-    }
+    },
   });
 
   const payload = result?.result;
   if (!payload?.ok) {
-    throw new Error(`TryHackMe returned HTTP ${payload?.status || "unknown"} for page ${page}.`);
+    throw new Error(
+      `TryHackMe returned HTTP ${payload?.status || "unknown"} for page ${page}.`,
+    );
   }
 
   return payload.data;
@@ -213,16 +239,20 @@ async function fetchScoreboardPageFromExtension(roomCode, limit, page) {
   const response = await fetch(url.toString(), {
     credentials: "include",
     headers: {
-      accept: "application/json"
-    }
+      accept: "application/json",
+    },
   });
 
   if (response.status === 401 || response.status === 403) {
-    throw new Error("TryHackMe refused the request. Make sure you are logged in on tryhackme.com, then try again.");
+    throw new Error(
+      "TryHackMe refused the request. Make sure you are logged in on tryhackme.com, then try again.",
+    );
   }
 
   if (!response.ok) {
-    throw new Error(`TryHackMe returned HTTP ${response.status} for page ${page}.`);
+    throw new Error(
+      `TryHackMe returned HTTP ${response.status} for page ${page}.`,
+    );
   }
 
   return response.json();
@@ -235,7 +265,8 @@ function renderCurrentUser(entry) {
   }
 
   els.mePanel.classList.remove("hidden");
-  els.meName.textContent = entry?.username || state.currentUser?.username || "Signed-in user";
+  els.meName.textContent =
+    entry?.username || state.currentUser?.username || "Signed-in user";
 
   if (entry) {
     els.meRank.textContent = `#${entry.rank}`;
@@ -250,32 +281,49 @@ function renderCurrentUser(entry) {
 function renderLeaderboard() {
   const query = els.searchInput.value.trim().toLowerCase();
   const visibleEntries = query
-    ? state.entries.filter((entry) => entry.username.toLowerCase().includes(query) || entry.id.toLowerCase().includes(query))
+    ? state.entries.filter(
+        (entry) =>
+          entry.username.toLowerCase().includes(query) ||
+          entry.id.toLowerCase().includes(query),
+      )
     : state.entries;
 
   els.resultCount.textContent = `${visibleEntries.length.toLocaleString()} user${visibleEntries.length === 1 ? "" : "s"}`;
 
   if (visibleEntries.length === 0) {
-    els.leaderboardBody.innerHTML = `<tr><td colspan="4" class="empty">${state.entries.length ? "No matching users." : "No leaderboard loaded."}</td></tr>`;
+    const row = document.createElement("tr");
+    const cell = createCell(
+      state.entries.length ? "No matching users." : "No leaderboard loaded.",
+      "empty",
+    );
+    cell.colSpan = 4;
+    row.append(cell);
+    els.leaderboardBody.replaceChildren(row);
     return;
   }
 
   const currentEntry = findCurrentUserEntry(visibleEntries, state.currentUser);
-  els.leaderboardBody.replaceChildren(...visibleEntries.map((entry) => {
-    const row = document.createElement("tr");
-    if (currentEntry && entry.rank === currentEntry.rank && entry.username === currentEntry.username) {
-      row.classList.add("current-user");
-    }
+  els.leaderboardBody.replaceChildren(
+    ...visibleEntries.map((entry) => {
+      const row = document.createElement("tr");
+      if (
+        currentEntry &&
+        entry.rank === currentEntry.rank &&
+        entry.username === currentEntry.username
+      ) {
+        row.classList.add("current-user");
+      }
 
-    row.append(
-      createCell(`#${entry.rank}`),
-      createUserCell(entry),
-      createCell(formatNumber(entry.score), "score"),
-      createCell(entry.completedAt ? formatDate(entry.completedAt) : "-")
-    );
+      row.append(
+        createCell(`#${entry.rank}`),
+        createUserCell(entry),
+        createCell(formatNumber(entry.score), "score"),
+        createCell(entry.completedAt ? formatDate(entry.completedAt) : "-"),
+      );
 
-    return row;
-  }));
+      return row;
+    }),
+  );
 }
 
 function createUserCell(entry) {
@@ -288,7 +336,10 @@ function createUserCell(entry) {
   username.className = "username";
   username.textContent = entry.username;
   meta.className = "subtle";
-  meta.textContent = entry.displayName && entry.displayName !== entry.username ? entry.displayName : entry.id || "";
+  meta.textContent =
+    entry.displayName && entry.displayName !== entry.username
+      ? entry.displayName
+      : entry.id || "";
 
   wrapper.append(username, meta);
   cell.append(wrapper);
@@ -330,6 +381,6 @@ function formatDate(value) {
     month: "short",
     day: "numeric",
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
   });
 }

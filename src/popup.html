@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TryHackMe Utilities</title>
-    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
     <main class="app">
@@ -13,7 +13,13 @@
           <p class="eyebrow">TryHackMe Utilities</p>
           <h1>Room leaderboard</h1>
         </div>
-        <button id="refreshButton" class="icon-button" type="button" title="Refresh leaderboard" aria-label="Refresh leaderboard">
+        <button
+          id="refreshButton"
+          class="icon-button"
+          type="button"
+          title="Refresh leaderboard"
+          aria-label="Refresh leaderboard"
+        >
           <span aria-hidden="true">↻</span>
         </button>
       </header>
@@ -21,7 +27,13 @@
       <section class="controls" aria-label="Leaderboard controls">
         <label class="field">
           <span>Room code</span>
-          <input id="roomCodeInput" type="text" autocomplete="off" spellcheck="false" placeholder="corridor">
+          <input
+            id="roomCodeInput"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="corridor"
+          />
         </label>
         <label class="field compact">
           <span>Page size</span>
@@ -31,12 +43,20 @@
             <option value="250">250</option>
           </select>
         </label>
-        <button id="loadButton" class="primary-button" type="button">Load</button>
+        <button id="loadButton" class="primary-button" type="button">
+          Load
+        </button>
       </section>
 
-      <section id="status" class="status" role="status" aria-live="polite">Open a TryHackMe room or enter a room code.</section>
+      <section id="status" class="status" role="status" aria-live="polite">
+        Open a TryHackMe room or enter a room code.
+      </section>
 
-      <section id="mePanel" class="me-panel hidden" aria-label="Your leaderboard position">
+      <section
+        id="mePanel"
+        class="me-panel hidden"
+        aria-label="Your leaderboard position"
+      >
         <span class="rank-badge" id="meRank">-</span>
         <div>
           <p class="me-name" id="meName">Signed-in user</p>
@@ -47,7 +67,13 @@
       <section class="toolbar" aria-label="Leaderboard tools">
         <label class="search-field">
           <span class="search-icon" aria-hidden="true">⌕</span>
-          <input id="searchInput" type="search" autocomplete="off" spellcheck="false" placeholder="Search users">
+          <input
+            id="searchInput"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Search users"
+          />
         </label>
         <span id="resultCount" class="result-count">0 users</span>
       </section>
@@ -69,6 +95,11 @@
           </tbody>
         </table>
       </section>
+
+      <footer class="privacy-note">
+        Uses your active TryHackMe session only to request the leaderboard. No
+        session data or leaderboard data is sent to the extension developer.
+      </footer>
     </main>
 
     <script type="module" src="popup.js"></script>
