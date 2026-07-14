@@ -43,6 +43,11 @@ for (const target of targets) {
   await cp(join(rootDirectory, "src"), join(targetDirectory, "src"), {
     recursive: true,
   });
+  await cp(
+    join(rootDirectory, "assets", "icons"),
+    join(targetDirectory, "assets", "icons"),
+    { recursive: true },
+  );
   await cp(join(rootDirectory, "LICENSE"), join(targetDirectory, "LICENSE"));
   await writeFile(
     join(targetDirectory, "manifest.json"),

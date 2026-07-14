@@ -3,9 +3,22 @@
   "name": "TryHackMe Utilities",
   "description": "Extra utilities for TryHackMe rooms, starting with full room leaderboards.",
   "version": "0.1.0",
+  "icons": {
+    "16": "assets/icons/duck-16.png",
+    "32": "assets/icons/duck-32.png",
+    "48": "assets/icons/duck-48.png",
+    "96": "assets/icons/duck-96.png",
+    "128": "assets/icons/duck-128.png"
+  },
   "action": {
     "default_title": "TryHackMe Utilities",
-    "default_popup": "src/popup.html"
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "assets/icons/duck-16.png",
+      "32": "assets/icons/duck-32.png",
+      "48": "assets/icons/duck-48.png",
+      "128": "assets/icons/duck-128.png"
+    }
   },
   "permissions": ["activeTab", "cookies", "scripting"],
   "host_permissions": ["https://tryhackme.com/*"]

@@ -5,3 +5,5 @@ build/
 artifacts/
 coverage/
 node_modules/
+/icons/
+work/
