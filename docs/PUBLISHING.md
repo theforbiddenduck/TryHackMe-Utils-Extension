@@ -4,11 +4,10 @@ The project produces separate Chrome and Firefox ZIP files from one shared sourc
 
 ## Before the first store submission
 
-1. Choose and add an open-source license if public reuse is intended.
-2. Add production icons to the manifest and prepare store screenshots and listing copy.
-3. Confirm that the privacy policy and each permission justification match the extension's behavior.
-4. Run `npm run validate` and manually test both generated builds.
-5. Keep the first store submissions manual. Add store-upload credentials to GitHub only after both listings have been approved.
+1. Add production icons to the manifest and prepare store screenshots and listing copy.
+2. Confirm that the privacy policy and each permission justification match the extension's behavior.
+3. Run `npm run validate` and manually test both generated builds.
+4. Keep the first store submissions manual. Add store-upload credentials to GitHub only after both listings have been approved.
 
 ## Build packages
 

@@ -55,3 +55,7 @@ See [Publishing](docs/PUBLISHING.md) for the store submission checklist and [Pri
 - Do not paste or store TryHackMe session cookies in this repository.
 - The extension needs access to `https://tryhackme.com/*` so the popup can call TryHackMe APIs with the logged-in browser session.
 - This project is not affiliated with or endorsed by TryHackMe.
+
+## License
+
+Licensed under the [MIT License](LICENSE).
