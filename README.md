@@ -2,6 +2,8 @@
 
 A small Manifest V3 browser extension for extra TryHackMe room utilities. It uses one shared codebase for Chrome, Chromium-based browsers, and Firefox.
 
+![TryHackMe Utilities room leaderboard](docs/images/room-leaderboard.png)
+
 ## Current Feature
 
 - Full room leaderboard popup for TryHackMe rooms.
