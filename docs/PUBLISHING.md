@@ -24,7 +24,8 @@ The uploadable files are written to `artifacts/` with a `SHA256SUMS.txt` file.
 2. Create a new item in the developer dashboard and upload the Chrome ZIP.
 3. Complete the listing, distribution, and privacy tabs.
 4. Describe the single purpose as displaying complete TryHackMe room leaderboards.
-5. Disclose the handling of the active room URL, TryHackMe authentication session, `thm-ud` cookie, and leaderboard response.
+5. Disclose the handling of the active room URL, locally read `thm-ud` cookie,
+   anonymous leaderboard requests, and leaderboard response.
 6. Link the hosted copy of `PRIVACY.md` and submit for review.
 
 ## Firefox Add-ons (AMO)
