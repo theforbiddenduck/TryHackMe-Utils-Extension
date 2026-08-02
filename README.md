@@ -94,7 +94,7 @@ npm run package
 The complete build process is implemented by the `package` script in `package.json`, which runs `scripts/build.mjs` and `scripts/package.mjs`. The Firefox submission will be created at:
 
 ```text
-artifacts/tryhackme-utils-extension-0.1.0-firefox.zip
+artifacts/tryhackme-utils-extension-0.1.1-firefox.zip
 ```
 
 No secrets, environment variables, network services, or TryHackMe account are required to build the extension. Network access is needed only for `npm ci` to download the open-source dependencies recorded in `package-lock.json`.
