@@ -25,7 +25,8 @@ The uploadable files are written to `artifacts/` with a `SHA256SUMS.txt` file.
 3. Complete the listing, distribution, and privacy tabs.
 4. Describe the single purpose as displaying complete TryHackMe room leaderboards.
 5. Disclose the handling of the active room URL, locally read `thm-ud` cookie,
-   anonymous leaderboard requests, and leaderboard response.
+   existing TryHackMe session used for same-origin leaderboard requests, and
+   leaderboard response.
 6. Link the hosted copy of `PRIVACY.md` and submit for review.
 
 ## Firefox Add-ons (AMO)

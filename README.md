@@ -19,8 +19,10 @@ A small Manifest V3 browser extension for extra TryHackMe room utilities. It use
   attempts, `timeCorrect`, and `answeredBy`, alongside THM's separate
   `timeScored` ranking timestamp.
 - Supports both individual and team leaderboard response formats.
-- Requests public leaderboard data without sending TryHackMe cookies, preventing
-  personalized `"rank": "You"` responses from replacing numeric ranks.
+- Uses the existing TryHackMe session for same-origin leaderboard requests so
+  TryHackMe's security checks accept them.
+- Converts personalized `"rank": "You"` values to the numeric row position
+  locally.
 - Reads the `thm-ud` cookie locally only to highlight the matching public result.
 
 ## Local Install (Chrome)
@@ -94,7 +96,7 @@ npm run package
 The complete build process is implemented by the `package` script in `package.json`, which runs `scripts/build.mjs` and `scripts/package.mjs`. The Firefox submission will be created at:
 
 ```text
-artifacts/tryhackme-utils-extension-0.1.1-firefox.zip
+artifacts/tryhackme-utils-extension-0.1.2-firefox.zip
 ```
 
 No secrets, environment variables, network services, or TryHackMe account are required to build the extension. Network access is needed only for `npm ci` to download the open-source dependencies recorded in `package-lock.json`.
@@ -105,7 +107,8 @@ See [Publishing](docs/PUBLISHING.md) for the store submission checklist and [Pri
 
 - Do not paste or store TryHackMe session cookies in this repository.
 - The extension needs access to `https://tryhackme.com/*` to request public
-  leaderboard data. Those requests explicitly omit cookies.
+  leaderboard data. The browser may attach the user's existing TryHackMe session
+  and security cookies directly to those same-origin requests.
 - This project is not affiliated with or endorsed by TryHackMe.
 
 ## License

@@ -6,9 +6,24 @@ import {
   fetchFullLeaderboard,
   findCurrentUserEntry,
   formatLevel,
+  getScoreboardHttpErrorMessage,
   normalizeEntry,
   summarizeTasks,
 } from "../src/leaderboard.js";
+
+describe("getScoreboardHttpErrorMessage", () => {
+  it("explains how to recover from TryHackMe's Vercel 429 check", () => {
+    expect(getScoreboardHttpErrorMessage(429, 1)).toBe(
+      "TryHackMe returned HTTP 429 for page 1. This is usually TryHackMe's Vercel security check. Refresh the TryHackMe room tab, then try again.",
+    );
+  });
+
+  it("preserves the normal HTTP error for other statuses", () => {
+    expect(getScoreboardHttpErrorMessage(500, 3)).toBe(
+      "TryHackMe returned HTTP 500 for page 3.",
+    );
+  });
+});
 
 describe("extractEntries", () => {
   it("accepts the known scoreboard response shapes", () => {
@@ -165,7 +180,7 @@ describe("normalizeEntry", () => {
     });
   });
 
-  it("preserves a personalized non-numeric rank without inventing a number", () => {
+  it("derives a numeric rank from the row position for a personalized rank", () => {
     expect(
       normalizeEntry(
         {
@@ -177,8 +192,8 @@ describe("normalizeEntry", () => {
       ),
     ).toMatchObject({
       rank: 17,
-      rankLabel: "You",
-      hasNumericRank: false,
+      rankLabel: "#17",
+      hasNumericRank: true,
     });
   });
 });
@@ -436,29 +451,17 @@ describe("fetchLeaderboardPages", () => {
     expect(result.repeatedPage).toBe(false);
   });
 
-  it("does not stop on a personalized 'You' rank and replaces it with the numeric rank", async () => {
-    const fetchPage = vi
-      .fn()
-      .mockResolvedValueOnce({
-        data: [
-          { userId: "u1", username: "user1", rank: 1 },
-          {
-            userId: "current",
-            username: "WellBehavedDuck",
-            rank: "You",
-          },
-        ],
-      })
-      .mockResolvedValueOnce({
-        data: [
-          { userId: "u2", username: "user2", rank: 2 },
-          {
-            userId: "current",
-            username: "WellBehavedDuck",
-            rank: 3,
-          },
-        ],
-      });
+  it("stops on a personalized 'You' rank and derives its numeric row position", async () => {
+    const fetchPage = vi.fn().mockResolvedValueOnce({
+      data: [
+        { userId: "u1", username: "user1", rank: 1 },
+        {
+          userId: "current",
+          username: "WellBehavedDuck",
+          rank: "You",
+        },
+      ],
+    });
 
     const result = await fetchLeaderboardPages({
       roomCode: "corridor",
@@ -468,12 +471,14 @@ describe("fetchLeaderboardPages", () => {
       fetchPage,
     });
 
-    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(fetchPage).toHaveBeenCalledTimes(1);
     expect(result.currentUserEntry).toMatchObject({
-      rank: 3,
-      rankLabel: "#3",
+      rank: 2,
+      rankLabel: "#2",
       hasNumericRank: true,
     });
+    expect(result.nextPage).toBe(2);
+    expect(result.hasMore).toBe(true);
   });
 
   it("continues to the end when the current user is absent", async () => {
