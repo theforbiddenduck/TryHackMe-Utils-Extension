@@ -6,11 +6,22 @@ A small Manifest V3 browser extension for extra TryHackMe room utilities. It use
 
 ## Current Feature
 
-- Full room leaderboard popup for TryHackMe rooms.
+- Paginated room leaderboard popup for TryHackMe rooms.
 - Detects the room code from the active `https://tryhackme.com/room/<roomCode>` tab.
-- Fetches all leaderboard pages from `/api/v2/rooms/scoreboard`.
-- Uses the browser's existing TryHackMe session through normal HTTPS requests to TryHackMe.
-- Highlights the signed-in user when the extension can identify them from the `thm-ud` cookie.
+- Loads normal leaderboard pages in batches of 250 until it finds the signed-in
+  user or current team, with a **Load more** control for the remaining entries.
+- Detects rooms whose scoreboard API ignores pagination and clearly reports
+  when TryHackMe only exposes the top 500 users, automatically retrying those
+  rooms with the maximum supported batch size.
+- Shows profile avatars, TryHackMe levels, total scores, solved-question and
+  attempt counts, and the latest correct-answer time.
+- Gives every task/question its own table column containing the raw score,
+  attempts, `timeCorrect`, and `answeredBy`, alongside THM's separate
+  `timeScored` ranking timestamp.
+- Supports both individual and team leaderboard response formats.
+- Requests public leaderboard data without sending TryHackMe cookies, preventing
+  personalized `"rank": "You"` responses from replacing numeric ranks.
+- Reads the `thm-ud` cookie locally only to highlight the matching public result.
 
 ## Local Install (Chrome)
 
@@ -83,7 +94,7 @@ npm run package
 The complete build process is implemented by the `package` script in `package.json`, which runs `scripts/build.mjs` and `scripts/package.mjs`. The Firefox submission will be created at:
 
 ```text
-artifacts/tryhackme-utils-extension-0.1.0-firefox.zip
+artifacts/tryhackme-utils-extension-0.1.1-firefox.zip
 ```
 
 No secrets, environment variables, network services, or TryHackMe account are required to build the extension. Network access is needed only for `npm ci` to download the open-source dependencies recorded in `package-lock.json`.
@@ -93,7 +104,8 @@ See [Publishing](docs/PUBLISHING.md) for the store submission checklist and [Pri
 ## Notes
 
 - Do not paste or store TryHackMe session cookies in this repository.
-- The extension needs access to `https://tryhackme.com/*` so the popup can call TryHackMe APIs with the logged-in browser session.
+- The extension needs access to `https://tryhackme.com/*` to request public
+  leaderboard data. Those requests explicitly omit cookies.
 - This project is not affiliated with or endorsed by TryHackMe.
 
 ## License

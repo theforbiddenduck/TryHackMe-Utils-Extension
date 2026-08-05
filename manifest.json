@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TryHackMe Utilities",
   "description": "Extra utilities for TryHackMe rooms, starting with full room leaderboards.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "icons": {
     "16": "assets/icons/duck-16.png",
     "32": "assets/icons/duck-32.png",

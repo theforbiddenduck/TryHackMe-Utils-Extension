@@ -35,14 +35,6 @@
             placeholder="corridor"
           />
         </label>
-        <label class="field compact">
-          <span>Page size</span>
-          <select id="limitInput">
-            <option value="50">50</option>
-            <option value="100" selected>100</option>
-            <option value="250">250</option>
-          </select>
-        </label>
         <button id="loadButton" class="primary-button" type="button">
           Load
         </button>
@@ -78,27 +70,39 @@
         <span id="resultCount" class="result-count">0 users</span>
       </section>
 
-      <section class="table-wrap" aria-label="Full leaderboard">
+      <section class="table-wrap" aria-label="Leaderboard results">
         <table>
           <thead>
-            <tr>
+            <tr id="leaderboardHeadRow">
               <th scope="col">Rank</th>
-              <th scope="col">User</th>
-              <th scope="col">Score</th>
-              <th scope="col">Completed</th>
+              <th scope="col">User / team</th>
+              <th scope="col">Level</th>
+              <th scope="col">Total score</th>
+              <th
+                scope="col"
+                title="Raw ranking timestamp returned by TryHackMe; it may not match the actual answer times."
+              >
+                THM timeScored
+              </th>
+              <th scope="col">Last timeCorrect</th>
             </tr>
           </thead>
           <tbody id="leaderboardBody">
             <tr>
-              <td colspan="4" class="empty">No leaderboard loaded.</td>
+              <td colspan="6" class="empty">No leaderboard loaded.</td>
             </tr>
           </tbody>
         </table>
       </section>
 
+      <button id="loadMoreButton" class="secondary-button hidden" type="button">
+        Load more users
+      </button>
+
       <footer class="privacy-note">
-        Uses your active TryHackMe session only to request the leaderboard. No
-        session data or leaderboard data is sent to the extension developer.
+        Leaderboard requests are sent without TryHackMe cookies. Your locally
+        stored username is read only to highlight your public result. No session
+        data or leaderboard data is sent to the extension developer.
       </footer>
     </main>
 
