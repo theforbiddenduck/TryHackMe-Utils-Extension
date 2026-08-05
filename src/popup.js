@@ -5,6 +5,7 @@ import {
   fetchLeaderboardPages,
   findCurrentUserEntry,
   formatLevel,
+  getScoreboardHttpErrorMessage,
   normalizeValue,
 } from "./leaderboard.js";
 
@@ -278,7 +279,7 @@ async function fetchScoreboardPageFromTryHackMeTab(
       url.searchParams.set("page", String(injectedPage));
 
       const response = await fetch(url.toString(), {
-        credentials: "omit",
+        credentials: "include",
         headers: {
           accept: "application/json",
         },
@@ -300,9 +301,7 @@ async function fetchScoreboardPageFromTryHackMeTab(
 
   const payload = result?.result;
   if (!payload?.ok) {
-    throw new Error(
-      `TryHackMe returned HTTP ${payload?.status || "unknown"} for page ${page}.`,
-    );
+    throw new Error(getScoreboardHttpErrorMessage(payload?.status, page));
   }
 
   return payload.data;
@@ -315,7 +314,7 @@ async function fetchScoreboardPageFromExtension(roomCode, limit, page) {
   url.searchParams.set("page", String(page));
 
   const response = await fetch(url.toString(), {
-    credentials: "omit",
+    credentials: "include",
     headers: {
       accept: "application/json",
     },
@@ -328,9 +327,7 @@ async function fetchScoreboardPageFromExtension(roomCode, limit, page) {
   }
 
   if (!response.ok) {
-    throw new Error(
-      `TryHackMe returned HTTP ${response.status} for page ${page}.`,
-    );
+    throw new Error(getScoreboardHttpErrorMessage(response.status, page));
   }
 
   return response.json();

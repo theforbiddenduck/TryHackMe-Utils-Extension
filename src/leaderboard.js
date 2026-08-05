@@ -205,6 +205,7 @@ export function normalizeEntry(entry, fallbackRank) {
     entry.position,
     entry.place,
   );
+  const isPersonalizedRank = rawRank.toLowerCase() === "you";
   const rank = numericRank ?? fallbackRank;
   const score = firstNumber(
     entry.score,
@@ -233,8 +234,12 @@ export function normalizeEntry(entry, fallbackRank) {
     isCurrentTeam: entry.isCurrentTeam === true,
     rank,
     rankLabel:
-      numericRank === null ? rawRank || `#${fallbackRank}` : `#${numericRank}`,
-    hasNumericRank: numericRank !== null,
+      numericRank !== null
+        ? `#${numericRank}`
+        : isPersonalizedRank
+          ? `#${fallbackRank}`
+          : rawRank || `#${fallbackRank}`,
+    hasNumericRank: numericRank !== null || isPersonalizedRank,
     score,
     timeScored: firstString(entry.timeScored),
     completedAt,
@@ -306,6 +311,16 @@ export function formatLevel(level) {
   const code = `0x${number.toString(16).toUpperCase()}`;
   const title = LEVEL_TITLES[number];
   return title ? `${code} ${title}` : code;
+}
+
+export function getScoreboardHttpErrorMessage(status, page) {
+  const responseMessage = `TryHackMe returned HTTP ${status || "unknown"} for page ${page}.`;
+
+  if (Number(status) === 429) {
+    return `${responseMessage} This is usually TryHackMe's Vercel security check. Refresh the TryHackMe room tab, then try again.`;
+  }
+
+  return responseMessage;
 }
 
 export function findCurrentUserEntry(entries, user) {
